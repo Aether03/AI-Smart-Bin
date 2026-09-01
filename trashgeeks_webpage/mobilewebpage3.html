@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrashGeeks</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      color: #2d3436;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    img.logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 10px;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    button {
+      background-color: #00b894;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: #019374;
+    }
+
+    .disabled {
+      background-color: #b2bec3 !important;
+      cursor: not-allowed;
+    }
+
+    #thankYou {
+      margin-top: 10px;
+      color: #0984e3;
+      font-weight: bold;
+    }
+
+    .points-box {
+      background: #55efc4;
+      color: #2d3436;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .rewards {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      margin-top: 20px;
+    }
+
+    .reward-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .reward-item:last-child {
+      border-bottom: none;
+    }
+
+    #mainPage {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="container">
+    <img src="./logo.jpg" alt="TrashGeeks Logo" class="logo">
+    <h1>Login to TrashGeeks</h1>
+    <input type="text" id="username" placeholder="Enter Username" />
+    <input type="password" id="password" placeholder="Enter Password" />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <!-- MAIN PAGE -->
+  <div id="mainPage">
+    <img src="./logo.jpg" alt="TrashGeeks Logo" class="logo">
+    <h1 id="welcomeText">Welcome to TrashGeeks!</h1>
+
+    <div class="points-box">
+      Points: <span id="points">0</span>
+    </div>
+
+    <div class="container">
+      <p>Enter your 6-digit code:</p>
+      <input type="number" id="codeInput" placeholder="123456" maxlength="6" />
+      <button id="submitBtn">Submit</button>
+      <p id="thankYou"></p>
+    </div>
+
+    <div class="rewards">
+      <h3>🎁 Reward Catalog</h3>
+      <div id="rewardList"></div>
+    </div>
+  </div>
+
+  <script>
+    // Always start on the login page by default
+    const loginPage = document.getElementById('loginPage');
+    const mainPage = document.getElementById('mainPage');
+    const welcomeText = document.getElementById('welcomeText');
+
+    const storedUser = localStorage.getItem('username');
+    if (storedUser) {
+      loginPage.style.display = 'none';
+      mainPage.style.display = 'flex';
+      welcomeText.textContent = `Welcome, ${storedUser}!`;
+    } else {
+      loginPage.style.display = 'block';
+      mainPage.style.display = 'none';
+    }
+
+    // Login function
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (username && password) {
+        localStorage.setItem('username', username);
+        loginPage.style.display = 'none';
+        mainPage.style.display = 'flex';
+        welcomeText.textContent = `Welcome, ${username}!`;
+      } else {
+        alert("Please enter both username and password!");
+      }
+    });
+
+    // Points system
+    let points = parseInt(localStorage.getItem('points')) || 0;
+    document.getElementById('points').innerText = points;
+
+    const rewards = [
+      { name: "Sticker Pack", cost: 3 },
+      { name: "Eco Tote Bag", cost: 10 },
+      { name: "Reusable Bottle", cost: 20 },
+      { name: "TrashGeeks Hoodie", cost: 50 }
+    ];
+
+    const rewardList = document.getElementById("rewardList");
+
+    function updateRewards() {
+      rewardList.innerHTML = "";
+      rewards.forEach((r, index) => {
+        const div = document.createElement("div");
+        div.className = "reward-item";
+        div.innerHTML = `
+          <span>${r.name} - ${r.cost} pts</span>
+          <button ${points < r.cost ? "disabled class='disabled'" : ""} onclick="redeem(${index})">Redeem</button>
+        `;
+        rewardList.appendChild(div);
+      });
+    }
+
+    updateRewards();
+
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      const code = document.getElementById("codeInput").value.trim();
+      const thankYou = document.getElementById("thankYou");
+
+      if (code.length === 6 && !isNaN(code)) {
+        thankYou.innerText = "✅ Thank you for recycling!";
+        points += 1;
+        document.getElementById("points").innerText = points;
+        localStorage.setItem("points", points);
+        updateRewards();
+        document.getElementById("codeInput").value = "";
+      } else {
+        thankYou.innerText = "❌ Please enter a valid 6-digit code.";
+      }
+
+      setTimeout(() => (thankYou.innerText = ""), 2000);
+    });
+
+    window.redeem = function(index) {
+      const reward = rewards[index];
+      if (points >= reward.cost) {
+        points -= reward.cost;
+        localStorage.setItem("points", points);
+        document.getElementById("points").innerText = points;
+        updateRewards();
+        alert(`🎉 You redeemed: ${reward.name}!`);
+      }
+    }
+  </script>
+</body>
+</html>

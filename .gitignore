@@ -1,0 +1,24 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Datasets (large training data, not for version control)
+COCO2017_bottle_lite/
+COCO2017_bottle_yolo/
+Dataset/
+TrainingData/
+
+# YOLO experiment runs — keep only train5 (the model server.py actually loads)
+runs/detect/train/
+runs/detect/train2/
+runs/detect/train3/
+runs/detect/train4/
+runs/detect/predict*/
+
+# Pretrained base checkpoint (auto-downloaded by ultralytics; not the trained model)
+yolov8n.pt
+
+# OS/editor junk
+.DS_Store
+Thumbs.db

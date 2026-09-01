@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrashGeeks</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f0f8f5;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c7a7b;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    input {
+      font-size: 1.2rem;
+      padding: 0.5rem;
+      width: 100%;
+      border: 2px solid #2c7a7b;
+      border-radius: 8px;
+      outline: none;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.7rem 1.5rem;
+      background: #2c7a7b;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:active {
+      background: #276b6d;
+    }
+
+    #message {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      color: #2f855a;
+      min-height: 1.5rem;
+    }
+
+    #points {
+      margin-top: 1rem;
+      font-size: 1.3rem;
+      color: #2c5282;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>TrashGeeks</h1>
+
+  <div class="container">
+    <label for="codeInput">Enter 6-digit code:</label><br><br>
+    <input id="codeInput" type="number" placeholder="######" maxlength="6" />
+    <button id="submitBtn">Submit</button>
+
+    <div id="message"></div>
+    <div id="points">Points: <span id="counter">0</span></div>
+  </div>
+
+  <script>
+    const input = document.getElementById('codeInput');
+    const button = document.getElementById('submitBtn');
+    const message = document.getElementById('message');
+    const counter = document.getElementById('counter');
+
+    // Load saved points if available
+    let points = localStorage.getItem('trashgeeks_points') || 0;
+    counter.textContent = points;
+
+    button.addEventListener('click', () => {
+      const code = input.value.trim();
+
+      if (/^\d{6}$/.test(code)) {
+        // Accept any valid 6-digit number
+        points++;
+        localStorage.setItem('trashgeeks_points', points);
+        counter.textContent = points;
+        message.textContent = "✅ Thank you for recycling!";
+        input.value = "";
+      } else {
+        message.textContent = "⚠️ Please enter a valid 6-digit code.";
+      }
+    });
+  </script>
+</body>
+</html>
